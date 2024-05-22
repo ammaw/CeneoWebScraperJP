@@ -1,4 +1,86 @@
 
-h1{
-    color: darkorange
+h1 {
+    text-align: center; /* Center align the text */
+    font-size: 45px; /* Adjust font size as needed */
+    color: #7a2992; /* Choose your preferred text color */
+    margin-top: 30px; /* Adjust top margin for spacing */
+    margin-bottom: 30px; /* Adjust bottom margin for spacing */
+    font-family: Arial, sans-serif; /* Choose your preferred font family */
+    background-color: #ad5aad;
+
+}
+
+/* Resetting default margin and padding */
+body, nav, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+/* Centering the menu */
+.menu {
+    text-align: center;
+}
+
+/* Removing bullet points */
+.menu nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling menu items */
+.menu nav li {
+    display: inline-block;  /*only block if vertically*/
+    list-style-type: none;
+    /*margin-top: 20px;*/
+}
+
+.menu nav li:last-child {
+    margin-right: 0;
+    
+}
+
+.menu nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 5px 10px; /* Add padding to make clickable area larger */
+    border: 1px solid #ccc; /* Optional: add border for visual effect */
+    border-radius: 5px; /* Optional: add border radius for rounded corners */
+}
+
+.menu nav a:hover {
+    background-color: #ad5aad; /* Optional: add background color on hover */
+} 
+
+
+footer {
+    background-color: #ad5aad; /* Background color for the footer */
+    color: #0e0d0d; /* Text color for the footer */
+    padding: 5px; /* Padding around the content within the footer */
+    text-align: center; /* Center-align the content */
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+footer p {
+    margin: 0; /* Remove default margin from the paragraph */
+}
+
+section {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    position: absolute;
+    width: 60%; 
+    align-content: center;
+    padding: 0;
+    left: 20%;
+    right: 20%;
+    
 }
