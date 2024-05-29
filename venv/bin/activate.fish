@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/jula/Desktop/CeneoWebScraper/venv"
+set -gx VIRTUAL_ENV "/Users/jula/Desktop/111/CeneoWebScraperJP/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
