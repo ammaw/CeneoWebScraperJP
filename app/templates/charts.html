@@ -1,4 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-        <p>This is {{product_id}} charts file. </p>
+        <p>This is {{product_id}} product charts file. </p>
+        <a type="button" class="btn btn-outline-dark" href="{{url_for('product', product_id=product_id)}}">opinions</a>
+        <div class="container">
+                <div class="row">
+                        <div class="col-6">
+                                <img src="{{url_for('static', filename='charts/'+product_id+'_score.png')}}" class="img-fluid" alt="Histogram of rates">
+                        </div>
+                        <div class="col-6">
+                                <img src="{{url_for('static', filename='charts/'+product_id+'_recommendation.png')}}" class="img-fluid" alt="Histogram of rates">
+                        </div>
+                </div>
+                <div class="column">
+
+                </div>
+        </div>
 {% endblock %}

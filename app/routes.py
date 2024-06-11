@@ -6,8 +6,11 @@ import requests
 import pandas as pd
 import numpy as np
 import io
+from matplotlib import pyplot as plt
+import matplotlib 
 from bs4 import BeautifulSoup
 from app.utils import extract_content, score, selectors, transformations, translate
+matplotlib.use('Agg') 
 
 @app.route('/')
 def index():
@@ -23,6 +26,7 @@ def extract():
             page_dom = BeautifulSoup(response.text, "html.parser")
             opinions_count = extract_content(page_dom,'a.product-review__link > span')
             if opinions_count:
+                product_name = page_dom.select_one("h1").get_text().strip()
                 url = f"https://www.ceneo.pl/{product_id}#tab=reviews"
                 all_opinions = []
                 while(url):
@@ -48,9 +52,15 @@ def extract():
                     os.mkdir("app/data/opinions")
                 with open(f"app/data/opinions/{product_id}.json", "w", encoding="UTF-8") as jf:
                     json.dump(all_opinions, jf, indent=4, ensure_ascii=False)
-                MAX_SCORE = 5
                 opinions = pd.DataFrame.from_dict(all_opinions)
-                opinions.score = opinions.score.apply(lambda s: round(s*MAX_SCORE,1))
+                MAX_SCORE = 5
+                opinions.score = opinions.score.apply(lambda s: round(s*MAX_SCORE, 1))
+                opinions_count = opinions.index.size
+                pros_count = opinions.pros.apply(lambda p: None if not p else p).count()
+                cons_count = opinions.cons.apply(lambda c: None if not c else c).count()
+                average_score = opinions.score.mean()
+                score_distribution = opinions.score.value_counts().reindex(np.arange(0,5.5,0.5), fill_value = 0)
+                recommendation_distribution = opinions.recommendation.value_counts(dropna=False).reindex([True, False, None], fill_value = 0)
                 statistics = {
                     'product_id' : product_id,
                     'product_name' : extract_content(page_dom, "h1"),
@@ -58,13 +68,32 @@ def extract():
                     'pros_count' : int(opinions.pros.astype(bool).sum()),
                     'cons_count' : int(opinions.cons.astype(bool).sum()),
                     'average_score' : opinions.score.mean().round(3),
-                    'score_distribution' : opinions.score.value_counts().reindex(np.arange(0.5,5.5,0.5)).to_dict(),
+                    'score_distribution' : opinions.score.value_counts().reindex(np.arange(0,5.5,0.5), fill_value = 0).to_dict(),
                     'recommendation_distribution' : opinions.recommendation.value_counts(dropna=False).reindex([1,np.nan,0]).to_dict()
                 }
                 if not os.path.exists("app/data/statistics"):
                     os.mkdir("app/data/statistics")
                 with open(f"app/data/statistics/{product_id}.json", "w", encoding="UTF-8") as jf:
                     json.dump(statistics, jf, indent=4, ensure_ascii=False)
+                    if not os.path.exists("app/static/charts"):
+                        os.mkdir("app/static/charts")
+                    flg, ax = plt.subplots()
+                    score_distribution.plot.bar(color = "purple")
+                    plt.xlabel("Number of stars")
+                    plt.ylabel("Number of  opinions")
+                    plt.title(f"Score histogram for {product_name}")
+                    plt.xticks(rotation = 0)
+                    ax.bar_label(ax.containers[0], label_type='edge', fmt = lambda l: int(l) if l else "")
+                    plt.savefig(f"app/static/charts/{product_id}_score.png")
+                    plt.close()
+                    recommendation_distribution.plot.pie(
+                        labels = ["Recommend", "Not recommend", "Indifferent"],
+                        label = "",
+                        colors = ["forestgreen", "crimson", "silver"],
+                        autopct = lambda l: "{:1.1f}%".format(l) if l else ""
+                    )
+                    plt.title(f"Recommendations shares for {product_name}")
+                    plt.savefig(f"app/static/charts/{product_id}_recommendation.png")
                 return redirect(url_for('product', product_id=product_id))
             return render_template("extract.html", error = "Product has no opinions")
         return render_template("extract.html", error = "Product does not exist")

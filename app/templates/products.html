@@ -1,12 +1,41 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-        {% for product in products %}
-        <div class="card bg-warning mb-3" style="max-width: 18rem;">
-                <div class="card-header border-warning">{{product.product_name}}</div>
-                <div class="card-body text-success">
-                  <p class="card-text">Stats</p>
+<div class="container mb-5 mt-3">
+    <div class="row">
+    {% for product in products %}
+        <div class="col-4">
+            <div class="card border-dark ms-1 me-1 mb-1 mt-1" style="width: 18rem;">
+                <div class="card-header"><a class="list-group-item" type="button" href="{{url_for('product', product_id=product.product_id)}}">{{product.product_name}}</a></div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Number of opinions
+                            <span class="badge text-bg-dark rounded-pill"><i class="bi bi-pie-chart-fill"></i> {{product.opinions_count}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Opinions with advantages
+                            <span class="badge text-bg-success rounded-pill"><i class="bi bi-hand-thumbs-up-fill"></i> {{product.pros_count}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Opinions with disadvantages
+                            <span class="badge text-bg-danger rounded-pill"><i class="bi bi-hand-thumbs-down-fill"></i> {{product.cons_count}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Average score
+                            <span class="badge text-bg-secondary rounded-pill"><i class="bi bi-stars"></i> {{product.average_score|round(2)}}</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="card-footer border-warning">Buttons</div>
+                <div class="card-footer text-center">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{url_for('download_json', product_id=product.product_id)}}" class="btn btn-outline-dark">JSON</a>
+                        <a href="{{url_for('download_csv', product_id=product.product_id)}}" class="btn btn-outline-dark">CSV</a>
+                        <a href="{{url_for('download_xlsx', product_id=product.product_id)}}" class="btn btn-outline-dark">XLSX</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% endfor %}
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}
